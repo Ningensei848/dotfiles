@@ -23,6 +23,7 @@ alias df='df -h'
 alias ps='ps --sort=start_time'
 alias del='rm -i'
 alias docker='sudo docker'
+alias dl='docker ps -l -q'
 # ヒント１：パスが長かったりすると毎回打つのは面倒 => プロジェクトごとにエイリアスを設定すると楽になる
 # alias some-project="/path/to/some-project"
 # ヒント２：gitコマンドはオプションも含めてalias登録しておくといいかも？

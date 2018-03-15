@@ -141,7 +141,7 @@ alias dl='docker ps -l -q'
 # ヒント１：パスが長かったりすると毎回打つのは面倒 => プロジェクトごとにエイリアスを設定すると楽になる
 # alias some-project="/path/to/some-project"
 
-alias home='cd /mnt/c/Users/Ningensei848/myDevelopment || cd ~/myDevelopment'
+alias home='cd ~/mnt/c/Users/Ningensei848/myDevelopment || cd ~/myDevelopment'
 alias myvenv='home && source myvenv/bin/activate'
 
 # ヒント２：gitコマンドはオプションも含めてalias登録しておくといいかも？

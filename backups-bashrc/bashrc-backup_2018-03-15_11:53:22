@@ -129,8 +129,6 @@ fi
 
 alias bashrc-backup='cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.bashrc ~/dotfiles/backups-bashrc/bashrc-backup'
 alias bashprofile-backup='cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.bash_profile ~/dotfiles/backups-bashprofile/bashprofile-backup'
-alias viminfo-backup='cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.viminfo ~/dotfiles/backups-viminfo/viminfo-backup'
-
 alias cls='clear'
 alias df='df -h'
 alias ps='ps --sort=start_time'
@@ -141,7 +139,7 @@ alias dl='docker ps -l -q'
 # ヒント１：パスが長かったりすると毎回打つのは面倒 => プロジェクトごとにエイリアスを設定すると楽になる
 # alias some-project="/path/to/some-project"
 
-alias home='cd /mnt/c/Users/Ningensei848/myDevelopment || cd ~/myDevelopment'
+alias home='cd ~/myDevelopment'
 alias myvenv='home && source myvenv/bin/activate'
 
 # ヒント２：gitコマンドはオプションも含めてalias登録しておくといいかも？

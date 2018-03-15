@@ -86,7 +86,7 @@ done
 
 for key in ${!MY_ARRAY[@]}; do
 
-    sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/$key ${MY_ARRAY[$key]}
+    sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/$key ${MY_ARRAY[$key]}/${key}-backup
 
 done
 
@@ -111,15 +111,12 @@ done
 # - latest backup file is 'XXXX-backup'
 # - later version backup file is renamed to 'XXXX-backup_YYYY-MM-DD_HH:MM:SS'
 
-i=0
-for filename in ${dotfiles[@]}; do
+for key in ${!MY_ARRAY[@]}; do
 
-    targetDir=`echo ~/dotfiles/backups-${dot_removed[i]}`
-    cd $targetDir
+    cd ${MY_ARRAY[$key]}
     targetFile=`ls -1t | head -1`
-    mv $targetDir/$targetFile ~/$filename
+    mv $targetDir/$targetFile ~/$key
     
-    let i++
 done
 
 

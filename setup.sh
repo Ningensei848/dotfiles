@@ -36,10 +36,10 @@ for file in ${dotfiles[@]}; do
 
     suffix=`echo ${file#*.}`                  # Remove '.' from filename
     dot_removed+=($suffix) 
-    combination=`echo $LATEST_BACKUP_$suffix` # Combine Prefix and Dot-removed filename
-    varName+=($combination)                   # Redefine the variable name to reuse it later
+    combination=`echo $LATEST_BACKUP_$suffix` # Create new str: LATEST_BACKUP_XXXX
+    varName+=($combination)                   # to Redefine the variable name to reuse it later
     targetDir=`echo ~/dotfiles/backups-$suffix`
-    MY_ARRAY[$file]=$targetDir
+    MY_ARRAY[$file]=$targetDir                # Add dictionary abject
     echo ${MY_ARRAY[$file]}
 done
 
@@ -74,6 +74,7 @@ for key in ${!MY_ARRAY[@]}; do
     if [ -e ${MY_ARRAY[$key]} ]; then
         echo ${MY_ARRAY[$key]} found.            # dirctory Existed : ディレクトリが存在する場合
     else
+        
         mkdir ${MY_ARRAY[$key]}                  # if NOT Existed, make NEW dir : ディレクトリが存在しない場合
     fi
 

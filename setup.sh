@@ -13,36 +13,34 @@
 # おまじない（いろいろな表示出力を出してくれるらしい）
 set -eux 
 
-# TARGET dotfiles : セットアップしたい設定ファイル名を選択# - you can add more dotfiles
+# TARGET dotfiles : セットアップしたい設定ファイル名を選択 
+# - you can add more dotfiles if you want
 
 dotfiles=(.bashrc .bash_profile .viminfo) # please add more VAR(dotfile)
 
-varName=()                                # initialize empty list : 配列の初期化 
-dot_removed=() 
-declare -A MY_ARRAY # 連想配列だから宣言しないと使えない
+declare -A MY_ARRAY                       # Declare ARRAY object : 連想配列だから宣言しないと使えない
+
 
 
 # MOVE to ROOT : root DIRに移動
-
 cd ~
 
 
 
-# PREPARE setup
+# PREPARE setup : もろもろ必要な関数の初期設定
 
 LATEST_BACKUP_=`echo LATEST_BACKUP_`
 
 for file in ${dotfiles[@]}; do
 
-    suffix=`echo ${file#*.}`                  # Remove '.' from filename
-    dot_removed+=($suffix) 
-    combination=`echo $LATEST_BACKUP_$suffix` # Create new str: LATEST_BACKUP_XXXX
-    varName+=($combination)                   # to Redefine the variable name to reuse it later
+    suffix=`echo ${file#*.}`              # Remove '.' from filename
     targetDir=`echo ~/dotfiles/backups-$suffix`
-    MY_ARRAY[$file]=$targetDir                # Add dictionary abject
-    echo ${MY_ARRAY[$file]}
+    MY_ARRAY[$file]=$targetDir            # Register '$file' to Dict object as a KEY
 done
 
+
+
+# CONFIRM existance of neccessary FILE and DIR
 
 for file in ${dotfiles[@]}; do
 
@@ -54,28 +52,13 @@ for file in ${dotfiles[@]}; do
 
 done
 
-# comment out area
-: << '#__COMMENT_OUT__'
-for str in ${dot_removed[@]}; do
-
-    targetDir=`echo ~/dotfiles/backups-$str`
-    if [ -e $targetDir ]; then 
-        echo $targetDir found.            # dirctory Existed : ディレクトリが存在する場合
-    else
-        mkdir $targetDir                  # if NOT Existed, make NEW dir : ディレクトリが存在しない場合
-    fi
-
-done
-#__COMMENT_OUT__
-
-
 for key in ${!MY_ARRAY[@]}; do
 
     if [ -e ${MY_ARRAY[$key]} ]; then
-        echo ${MY_ARRAY[$key]} found.            # dirctory Existed : ディレクトリが存在する場合
+        echo ${MY_ARRAY[$key]} found.     # dirctory Existed : ディレクトリが存在する場合
     else
         
-        mkdir ${MY_ARRAY[$key]}                  # if NOT Existed, make NEW dir : ディレクトリが存在しない場合
+        mkdir ${MY_ARRAY[$key]}           # if NOT Existed, make NEW dir : ディレクトリが存在しない場合
     fi
 
 done
@@ -90,13 +73,6 @@ for key in ${!MY_ARRAY[@]}; do
     sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/$key ${MY_ARRAY[$key]}/${key}-backup-default-wsl
 
 done
-
-# comment out area
-: << '#__COMMENT_OUT__'
-sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.bashrc ~/dotfiles/backups-bashrc/bashrc-backup 
-sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.bash_profile ~/dotfiles/backups-bashprofile/bashprofile-backup
-sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.viminfo ~/dotfiles/backups-viminfo/viminfo-backup
-#__COMMENT_OUT__
 
 
 
@@ -124,8 +100,4 @@ done
 # COMPLETE
 
 echo Setup is Completed.
-
-
-
-
 

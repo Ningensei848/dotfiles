@@ -7,20 +7,23 @@
 
 やり残していること: [pycharmを起動するときに自動でWSLデーモンサーバを起動しlocalhostにsshで接続する](https://twitter.com/Ningensei848/status/974516408552796160)
 
+こちらもどうぞ => [PyCharm + WSLを導入したWindows10でのDjango開発日記 - Qiita](https://goo.gl/7o3Tuh)
+
 ## 目次
 
-- 使い方
+- 使い方 (初心者でもコピペでどうにかなります笑)
 - .bashrc
 - .bash_profile
 - .viminfo
 - README_template.md
 - 参考文献
 
+
 ### 使い方:how to use
 
 1. `$ cd ~` (本来`.FILE`が置かれているはずのディレクトリへ移動)
 1. `$ git clone https://github.com/Ningensei848/dotfiles.git`
-1. `$ bash ~/dotfiles/setup.sh` (コピペして実行して、完了！)
+1. `$ sudo bash ~/dotfiles/setup.sh` (コピペして実行して、完了！)
 1. また、任意のディレクトリに於いて`$ (dot_REMOVED_FILE)-backup`とすればいつでもバックアップをとることができる
 
 ### .bashrc

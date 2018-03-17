@@ -87,7 +87,7 @@ done
 
 for key in ${!MY_ARRAY[@]}; do
 
-    sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/$key ${MY_ARRAY[$key]}/${key}-backup
+    sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/$key ${MY_ARRAY[$key]}/${key}-backup-default-wsl
 
 done
 
@@ -103,7 +103,7 @@ sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.viminfo ~/dotfiles/backups-vi
 # REMOVE original 
 
 for file in ${dotfiles[@]}; do
-    rm -rf file
+    sudo rm -rf file
 done
 
 
@@ -115,8 +115,7 @@ done
 for key in ${!MY_ARRAY[@]}; do
 
     cd ${MY_ARRAY[$key]}
-    targetFile=`ls -1t | head -1`
-    mv $targetDir/$targetFile ~/$key
+    sudo cp $key ~/$key
     
 done
 

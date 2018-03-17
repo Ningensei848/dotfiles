@@ -9,6 +9,7 @@
 ~h
 # Command Line History (newest to oldest):
 :wq
+:q
 
 # Search String History (newest to oldest):
 
@@ -19,22 +20,23 @@
 # Input Line History (newest to oldest):
 
 # Registers:
+""-	CHAR	0
+	s
 
 # File marks:
-'0  5  4  /etc/ssh/sshd_config
-'1  52  25  /etc/ssh/sshd_config
+'0  52  25  /etc/ssh/sshd_config
 
 # Jumplist (newest first):
--'  5  4  /etc/ssh/sshd_config
--'  1  0  /etc/ssh/sshd_config
 -'  52  25  /etc/ssh/sshd_config
+-'  1  0  /etc/ssh/sshd_config
 
 # History of marks within files (newest to oldest):
 
 > /etc/ssh/sshd_config
-	"	5	4
-	^	5	5
-	.	5	5
-	+	16	24
+	"	52	25
+	^	52	26
+	.	52	25
+	+	16	22
+	+	16	25
+	+	16	25
 	+	52	25
-	+	5	5

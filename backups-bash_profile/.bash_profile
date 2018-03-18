@@ -32,9 +32,9 @@ fi
 #PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$'
 
 # ningensei848 's PS1
-PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\n\[\033[01;32m\]\u@\H\[\e[33m\]:\[\033[01;34m\]\w\[\033[00m\][\t]\n \$ '
+PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\n\[\033[01;32m\]\u@\H\[\e[33m\e[40m\]:\[\e[36m\e[40m\]\w\[\e[37m\e[40m\] [\t]\n\[\e[40m\] $ '
 export PS1
-
+	
 # CR+LF周りの調整(CRを無視する)
 
 export SHELLOPTS

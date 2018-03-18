@@ -139,6 +139,7 @@ alias dl='docker ps -l -q'
 
 alias home='cd ~/myDevelopment'
 alias myvenv='home && source myvenv/bin/activate'
+alias start='sudo service ssh start'
 
 # ヒント２：gitコマンドはオプションも含めてalias登録しておくといいかも？
  alias gitlgo="git log --graph --oneline"

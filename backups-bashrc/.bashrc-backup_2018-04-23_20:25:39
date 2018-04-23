@@ -41,8 +41,6 @@ fi
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
-    linux) LANG=C ;; # user add for transration to japanese
-    *) LANG=ja.JP.UTF-8 ;; # user add
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
@@ -130,23 +128,17 @@ alias bashrc-backup='cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.bashrc ~/dotf
 alias bash_profile-backup='cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.bash_profile ~/dotfiles/backups-bash_profile/.bash_profile-backup'
 alias viminfo-backup='cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/.viminfo ~/dotfiles/backups-viminfo/.viminfo-backup'
 
-
-##### popy & paste for keyboard (to clipborad)
-
-alias pbcp='xsel --clipboard --input'
-alias pbps='xsel --clipboard --output'
-
 alias cls='clear'
 alias df='df -h'
 alias ps='ps --sort=start_time'
 alias del='rm -i'
 alias docker='sudo docker'
-#alias dl='docker ps -l -q'
+alias dl='docker ps -l -q'
 # ヒント１：パスが長かったりすると毎回打つのは面倒 => プロジェクトごとにエイリアスを設定すると楽になる
 # alias some-project="/path/to/some-project"
 
-alias home='cd ~/webApp007'
-alias myvenv='source myvenv/bin/activate'
+alias home='cd /mnt/c/Users/Ningensei848/myDevelopment'
+alias myvenv='home && source myvenv/bin/activate'
 alias start='sudo service ssh start'
 
 # ヒント２：gitコマンドはオプションも含めてalias登録しておくといいかも？

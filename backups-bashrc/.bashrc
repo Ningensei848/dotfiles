@@ -137,8 +137,8 @@ alias dl='docker ps -l -q'
 # ヒント１：パスが長かったりすると毎回打つのは面倒 => プロジェクトごとにエイリアスを設定すると楽になる
 # alias some-project="/path/to/some-project"
 
-alias home='cd ~/myDevelopment'
-alias myvenv='home && source myvenv/bin/activate'
+alias home='cd ~'
+alias myvenv='source myvenv/bin/activate'
 alias start='sudo service ssh start'
 
 # ヒント２：gitコマンドはオプションも含めてalias登録しておくといいかも？

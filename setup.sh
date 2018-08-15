@@ -16,7 +16,7 @@ set -eux
 # TARGET dotfiles : セットアップしたい設定ファイル名を選択 
 # - you can add more dotfiles if you want
 
-dotfiles=(.bashrc .bash_profile .viminfo) # please add more VAR(dotfile)
+dotfiles=(.bashrc .bash_profile .viminfo .gitconfig) # please add more VAR(dotfile)
 
 declare -A MY_ARRAY                       # Declare ARRAY object : 連想配列だから宣言しないと使えない
 

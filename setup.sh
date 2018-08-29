@@ -70,7 +70,7 @@ done
 
 for key in ${!MY_ARRAY[@]}; do
 
-    sudo cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/$key ${MY_ARRAY[$key]}/${key}-backup-default-wsl
+    cp -b --suffix=_$(date +%Y-%m-%d_%H:%M:%S) ~/$key ${MY_ARRAY[$key]}/${key}-backup-default
 
 done
 
@@ -91,7 +91,7 @@ done
 for key in ${!MY_ARRAY[@]}; do
 
     cd ${MY_ARRAY[$key]}
-    sudo cp $key ~/$key
+    cp $key ~/$key
     
 done
 

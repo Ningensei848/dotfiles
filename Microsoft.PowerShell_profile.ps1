@@ -1,35 +1,48 @@
+# My Powershell profile
+# cf. https://bit.ly/2txHxQw
 # cf. http://d.hatena.ne.jp/pshell/20140428/1398690933
-# cf. https://qiita.com/mu_sette/items/3954759daee8ae9ad26f
 
-# alias Including args
+# Cheat sheet:
+# - `sal`: Set-Alias
 
-# ###### `ll` ######
+# ########################### Function Inculding Args ################################
+
+# ####### ll #######
 function CustomListChildItems { Get-ChildItem $args[0] -force | Sort-Object -Property @{ Expression = 'LastWriteTime'; Descending = $true }, @{ Expression = 'Name'; Ascending = $true } | Format-Table -AutoSize -Property Mode, Length, LastWriteTime, Name }
 sal ll CustomListChildItems
 
-# ###### `sudo` ######
+# ####### open sudo user window #######
 function CustomSudo {Start-Process powershell.exe -Verb runas}
 sal sudo CustomSudo
 
-# ###### `hosts` ######
+# ####### hosts #######
 function CustomHosts {start notepad C:\Windows\System32\drivers\etc\hosts -verb runas}
 sal hosts CustomHosts
 
-# ###### `update` ######
+# ####### update #######
 function CustomUpdate {explorer ms-settings:windowsupdate}
 sal update CustomUpdate
 
-# ###### `mysql` ######
+
+# ####### move to custom RootDIR #######
+function CustomRoot {cd "C:\Users\kiai\myDevelopment"}
+sal home CustomRoot
+
+# ####### mysql #######
 function CustomMySQL {mysql -u root -p}
 sal mysql CustomMySQL
 
-# ###### `home` ######
+# ########################### command Alias ################################
+
+Set-Alias edit "C:\Program Files\Sublime Text 3\sublime_text.exe"
+
+# ########################### temporary Alias ################################
+
+# ####### move to Project root #######
+function BubLog_DB_ROOT {cd "C:\Users\kiai\myDevelopment\BugLog_DB"}
+sal bld BubLog_DB_ROOT
+
+# ###### home ######
 function CustomCdHome {cd "C:\Users\kiai\myDevelopment"}
 sal home CustomCdHome
 
-
-
-
-# defined new alias
-
-Set-Alias edit "C:\Program Files\Sublime Text 3\sublime_text.exe"

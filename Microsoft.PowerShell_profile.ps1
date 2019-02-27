@@ -24,7 +24,7 @@ function CustomUpdate {explorer ms-settings:windowsupdate}
 sal update CustomUpdate
 
 # ####### docker-machine #######
-function CustomStartDockerMachine { docker-machine ls && docker-machine restart default && docker-machine env && & "C:\Program Files\Docker Toolbox\docker-machine.exe" env | Invoke-Expression }
+function CustomStartDockerMachine { docker-machine ls; docker-machine restart default; docker-machine env; & "C:\Program Files\Docker Toolbox\docker-machine.exe" env | Invoke-Expression; docker-machine ls }
 sal start-docker CustomStartDockerMachine
 
 # ####### move to custom RootDIR #######

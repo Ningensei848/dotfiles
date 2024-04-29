@@ -27,36 +27,11 @@ sal ll CustomListChildItems
 function CustomSudo {Start-Process powershell.exe -Verb runas}
 sal sudo CustomSudo
 
-# ####### hosts #######
-function CustomHosts {start notepad C:\Windows\System32\drivers\etc\hosts -verb runas}
-sal hosts CustomHosts
-
 # ####### update #######
 function CustomUpdate {explorer ms-settings:windowsupdate}
 sal update CustomUpdate
 
-# ####### docker-machine #######
-function CustomStartDockerMachine { docker-machine ls; docker-machine restart default; docker-machine env; & docker-machine env | Invoke-Expression; docker-machine ls }
-sal start-docker CustomStartDockerMachine
-
 # ####### move to custom RootDIR #######
-function CustomRoot {cd "C:\Users\kiai\myDevelopment"}
+function CustomRoot {cd "C:\Users\kiai\Dev"}
 sal home CustomRoot
 
-# ####### mysql #######
-function CustomMySQL {mysql -u root -p}
-sal mysql CustomMySQL
-
-# ########################### command Alias ################################
-
-Set-Alias edit "C:\Program Files\Sublime Text 3\sublime_text.exe"
-
-# ########################### temporary Alias ################################
-
-# ####### move to Project root #######
-function BubLog_DB_ROOT {cd "C:\Users\kiai\myDevelopment\BugLog_DB"}
-sal bld BubLog_DB_ROOT
-
-# ###### home ######
-function CustomCdHome {cd "C:\Users\kiai\myDevelopment"}
-sal home CustomCdHome

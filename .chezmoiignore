@@ -1,0 +1,11 @@
+# ---------------------------------------------------------------------------------
+# .chezmoiignore - chezmoi
+# cf. https://www.chezmoi.io/reference/special-files-and-directories/chezmoiignore/
+#
+# > chezmoi ignores all files and directories that start with `.`
+# > so no special whitelists are needed for version control systems and
+# > their control files (e.g. `.git` and `.gitignore`).
+# ---------------------------------------------------------------------------------
+
+README.md
+LICENSE

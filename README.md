@@ -67,6 +67,29 @@ cargo install sheldon
 ```
 
 
+#### Starship
+
+```shell
+cargo install starship --locked
+```
+
+Cmake がない！と怒られたら：
+
+```shell
+sudo apt -y update
+sudo apt -y install build-essential
+# cmake には curl, zlib が必要
+sudo apt -y install zlib1g-dev libcurl4-gnutls-dev
+cd /tmp
+git clone https://github.com/Kitware/CMake.git
+cd CMake
+./configure --system-curl --system-zlib
+make
+sudo make install
+```
+
+cf. https://www.kkaneko.jp/tools/ubuntu/cmake_buildout.html
+
 ## Author
 
 [![Twitter is what's happening in the world and what people are talking about right now.](https://img.shields.io/badge/@Ningensei848-%231DA1F2.svg?&style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/Ningensei848)

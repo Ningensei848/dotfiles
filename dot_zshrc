@@ -1,3 +1,8 @@
+# 参考文献 -----------------------------------------------------------------------
+# 究極のzshプラグイン読み込み高速化: プラグインマネージャーの限界を越えろ - zenn.dev
+# cf. https://zenn.dev/fuzmare/articles/zsh-plugin-manager-cache
+# ----------------------------------------------------------------------------
+
 # Set up the prompt
 
 autoload -Uz promptinit
@@ -36,17 +41,32 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
+# sheldon --------------------------------------------------------------------
+# --- source command override technique
+export ZSHRC_DIR="$HOME/.zsh"
+function source {
+  ensure_zcompiled $1
+  builtin source $1
+}
+function ensure_zcompiled {
+  local compiled="$1.zwc"
+  if [[ ! -r "$compiled" || "$1" -nt "$compiled" ]]; then
+    echo "\033[1;36mCompiling\033[m $1"
+    zcompile $1
+  fi
+}
+ensure_zcompiled $HOME/.zshrc
 
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-# plugins=(
-#    git
-#    zsh-autosuggestions # https://github.com/zsh-users/zsh-autosuggestions
-#    zsh-syntax-highlighting # https://github.com/zsh-users/zsh-syntax-highlighting
-# )
+source $ZSHRC_DIR/nonlazy.zsh
 
-# Alias ----------------------------------------------------------------------
-source $HOME/.zsh_aliases
+# --- sheldon cache technique
+export SHELDON_CONFIG_DIR="$ZSHRC_DIR/sheldon"
+sheldon_cache="$SHELDON_CONFIG_DIR/sheldon.zsh"
+sheldon_toml="$SHELDON_CONFIG_DIR/plugins.toml"
+
+if [[ ! -r "$sheldon_cache" || "$sheldon_toml" -nt "$sheldon_cache" ]]; then
+  sheldon source > $sheldon_cache
+fi
+source "$sheldon_cache"
+unset sheldon_cache sheldon_toml
+zsh-defer zsh-defer unfunction source

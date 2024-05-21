@@ -8,10 +8,11 @@
 
 ```shell
 export GITHUB_USERNAME="Ningensei848" && \
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b $HOME/bin && \
+export ZSH_CUSTOM="~/.zsh" && \
+sh -c "$(wget -qO- get.chezmoi.io)" -- -b $HOME/bin && \
 echo '# chezmoi\npath+=("$HOME/bin")\n' >> ~/.zshrc && \
 source ~/.zshrc && which chezmoi && chezmoi --version && \
-echo $ZSH_CUSTOM && mkdir $ZSH_CUSTOM/plugins/chezmoi && \
+echo $ZSH_CUSTOM && mkdir -p $ZSH_CUSTOM/plugins/chezmoi && \
 chezmoi completion zsh --output=$ZSH_CUSTOM/plugins/chezmoi/_chezmoi && \
 chezmoi init --apply $GITHUB_USERNAME
 ```
@@ -76,15 +77,15 @@ cargo install starship --locked
 Cmake がない！と怒られたら：
 
 ```shell
-sudo apt -y update
-sudo apt -y install build-essential
-# cmake には curl, zlib が必要
-sudo apt -y install zlib1g-dev libcurl4-gnutls-dev
-cd /tmp
-git clone https://github.com/Kitware/CMake.git
-cd CMake
-./configure --system-curl --system-zlib
-make
+sudo apt -y update && \
+sudo apt -y install build-essential && \
+echo "cmake には curl, zlib が必要" && \
+sudo apt -y install zlib1g-dev libcurl4-gnutls-dev && \
+cd /tmp && \
+git clone https://github.com/Kitware/CMake.git && \
+cd CMake && \
+./configure --system-curl --system-zlib && \
+make && \
 sudo make install
 ```
 

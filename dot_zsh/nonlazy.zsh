@@ -16,3 +16,16 @@ setopt extendedglob
 setopt noflowcontrol
 setopt correct
 unsetopt beep
+
+# define $fpath for completion -----------------------------------------------
+completions_dir="$HOME/.zsh/completions"
+
+# if completions are not generated, ...
+if [[ ! -r "$completions_dir" ]]; then
+  mkdir $completions_dir
+  # TODO: ここでその他の completions を生成するスクリプトを走らせる
+  # hogehoge fugafuga ...
+fi
+
+fpath=($completions_dir $fpath)
+

@@ -8,7 +8,7 @@
 
 ```shell
 export GITHUB_USERNAME="Ningensei848" && \
-export ZSH_CUSTOM="~/.zsh" && \
+export ZSH_CUSTOM="${HOME}/.zsh" && \
 sh -c "$(wget -qO- get.chezmoi.io)" -- -b $HOME/bin && \
 echo '# chezmoi\npath+=("$HOME/bin")\n' >> ~/.zshrc && \
 source ~/.zshrc && which chezmoi && chezmoi --version && \

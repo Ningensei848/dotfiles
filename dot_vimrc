@@ -21,6 +21,21 @@ set laststatus=2
 syntax on
 " 改行の際に，同レベルのインデントを自動で挿入
 set autoindent
+" tabを半角スペースで挿入する
+set expandtab
+" 空白文字の可視化
+set list
+" 可視化した空白文字の表示形式を指定
+" cf. https://syu-m-5151.hatenablog.com/entry/2017/01/21/154552 
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+" タブの幅を 8 -> 4 に変更
+set tabstop=4
+" vimが自動で生成する（読み込み時など）tab幅をスペース4つ文にする
+set shiftwidth=4
+" 改行時などに自動でインデントを設定してくれるように
+set smartindent
+" 行の先頭で<Tab>キーを入力するとインデントを挿入
+set smarttab
 
 " 1. 移動 ------------------------------------------------------------------
 " Insert mode でのカーソル移動
@@ -38,4 +53,7 @@ set ignorecase
 set incsearch
 " 検索パターンが大文字を含んでいたらオプション 'ignorecase' を上書き
 set smartcase
+
+" 99. プラグインの読み込み
+packloadall
 

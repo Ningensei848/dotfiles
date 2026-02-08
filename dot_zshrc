@@ -40,12 +40,18 @@ unset sheldon_cache sheldon_toml
 
 # --- from starship prompt
 starship_cache="$STARSHIP_CONFIG_DIR/starship.zsh"
-starship_init="$STARSHIP_CONFIG_DIR/init.sh"
-if [[ ! -r "$starship_cache" || "$starship_init" -nt "$starship_cache" || "$STARSHIP_CONFIG" -nt "$starship_cache" ]]; then
-  starship init zsh > $starship_cache
+# starshipコマンドのパスを取得
+starship_bin="$(command -v starship)"
+
+# キャッシュ再生成条件:
+# 1. キャッシュがない
+# 2. 設定ファイル(config.toml)の方が新しい
+# 3. starship本体(バイナリ)の方が新しい (アプデ時用)
+if [[ ! -r "$starship_cache" || "$STARSHIP_CONFIG" -nt "$starship_cache" || "$starship_bin" -nt "$starship_cache" ]]; then
+  starship init zsh > "$starship_cache"
 fi
 source "$starship_cache"
-unset starship_cache starship_init
+unset starship_cache starship_bin
 
 # ----------------------------------------------------------------------------
 # Finally, ...

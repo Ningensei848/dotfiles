@@ -16,25 +16,46 @@
 shell = "zsh"
 
 [templates]
+# zsh-defer を適用するためのテンプレート
 defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer -t 0.0001 source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
 
 [plugins.zsh-defer]
 github = "romkatv/zsh-defer"
 hooks.post = '''
 zsh-defer source $ZSHRC_DIR/lazy.zsh
+# -C オプションを追加してセキュリティチェックをスキップ (高速化)
 zsh-defer -t 0.001 autoload -Uz compinit
-zsh-defer -t 0.001 compinit
+zsh-defer -t 0.001 compinit -C
 '''
 
-[plugins.zsh-syntax-highlighting]
-github = "zsh-users/zsh-syntax-highlighting"
+# --- 補完・入力支援系 ---
+
+[plugins.zsh-completions]
+github = 'zsh-users/zsh-completions'
 apply = ["defer"]
+
+# --- 履歴検索 ---
+# 入力中のコマンドに一致する履歴だけを ↑↓ で遡れる神プラグイン
+[plugins.zsh-history-substring-search]
+github = "zsh-users/zsh-history-substring-search"
+apply = ["defer"]
+hooks.post = '''
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+'''
+
+# --- 表示系 ---
 
 [plugins.zsh-autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
 use = ["{{ name }}.zsh"]
 apply = ["defer"]
 
-[plugins.zsh-completions]
-github = 'zsh-users/zsh-completions'
+# --- 最後に読み込む必要があるもの ---
+
+# シンタックスハイライトは必ず最後に記述する
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
 apply = ["defer"]

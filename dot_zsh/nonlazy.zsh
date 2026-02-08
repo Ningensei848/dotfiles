@@ -2,7 +2,29 @@
 # This script is sourced from `.zshrc`
 # ----------------------------------------------------------------------------
 
-# options
+# env variables & PATH -------------------------------------------------------
+# --- chezmoi
+path+=("$HOME/bin")
+
+# --- local bin (for uv, various tools)
+path+=("$HOME/.local/bin")
+
+# --- rust (cargo)
+# .cargo/env があれば読み込む（これでPATHも通る）、なければ直接binを追加
+if [[ -f "$HOME/.cargo/env" ]]; then
+  source "$HOME/.cargo/env"
+else
+  path+=("$HOME/.cargo/bin")
+fi
+
+# --- proto
+# cf. https://moonrepo.dev/docs/proto/install
+export PROTO_HOME="$HOME/.proto"
+path+=("$PROTO_HOME/shims")
+path+=("$PROTO_HOME/bin")
+
+
+# options --------------------------------------------------------------------
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
@@ -22,10 +44,7 @@ completions_dir="$HOME/.zsh/completions"
 
 # if completions are not generated, ...
 if [[ ! -r "$completions_dir" ]]; then
-  mkdir $completions_dir
-  # TODO: ここでその他の completions を生成するスクリプトを走らせる
-  # hogehoge fugafuga ...
+  mkdir -p $completions_dir
 fi
 
 fpath=($completions_dir $fpath)
-

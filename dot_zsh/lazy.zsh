@@ -3,20 +3,16 @@
 # This script is sourced from `plugins.toml`
 # ----------------------------------------------------------------------------
 
-# env variables --------------------------------------------------------------
-export VOLTA_HOME="$HOME/.volta"
-
-# PATH -----------------------------------------------------------------------
-# --- chezmoi
-path+=("$HOME/bin")
-# --- rust
-path+=("$HOME/.cargo/env")
-# --- rye
-source "$HOME/.rye/env"
-# --- volta
-path+=("$VOLTA_HOME/bin")
-
 # Alias ----------------------------------------------------------------------
 alias ll="ls -alF"
 alias la="ls -A"
 alias l="ls -CF"
+
+# proto hook -----------------------------------------------------------------
+# ディレクトリ移動時に .prototools を検知して環境を切り替える機能
+# 少し重いので遅延読み込みさせる
+if command -v proto >/dev/null 2>&1; then
+  eval "$(proto activate zsh)"
+fi
+
+# その他、起動直後に必須ではない重い処理や設定はここに記述

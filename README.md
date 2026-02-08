@@ -32,17 +32,7 @@ echo $SHELL && $SHELL --version
 
 ## 管理したい
 
-- rye
-- volta
 - rustup (rust+cargo)
-
-### rye
-
-N/A
-
-### volta
-
-N/A
 
 ### rustup
 
@@ -67,7 +57,6 @@ sudo apt update && \
 sudo apt install pkg-config libssl-dev build-essential && \
 cargo install sheldon
 ```
-
 
 #### Starship
 
@@ -106,4 +95,3 @@ _This software is released under the [MIT License](LICENSE)._
 
 - [ ] CI/CD の導入
   - [ ] 異なる OS 間での導入スクリプトの作成
-- [ ] zsh のカスタマイズ(with `Oh My Zsh`)

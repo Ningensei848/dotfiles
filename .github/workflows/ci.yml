@@ -1,0 +1,13 @@
+# cf. [既存の dotfiles を chezmoi で管理する](https://zenn.dev/johnmanjiro13/articles/d14825f4ef3184)
+name: Chezmoi Install Check
+on:
+  - push
+jobs:
+  test:
+    name: test
+    runs-on: macos-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install dotfiles
+        run: sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply -S .

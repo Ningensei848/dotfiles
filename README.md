@@ -1,6 +1,7 @@
 # dotfiles — WSL / Linux
 
-chezmoi で設定とユーザー用 CLI を管理する。対応は Linux amd64 / arm64（WSL を含む）。
+chezmoi で設定とユーザー用 CLI を管理する。主な利用環境は **WSL 2 上の Ubuntu 26.04**。
+対応は Linux amd64 / arm64。CI は Ubuntu 24.04 / 26.04 で実行する。
 Zsh、Sheldon、Starship を継続し、シェル起動時のネットワーク取得や独自の生成コード管理を減らす。
 
 ## 導入

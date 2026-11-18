@@ -74,6 +74,7 @@ chezmoi apply
 Starship は公開 `.sha256` と照合する。Sheldon 0.8.5 は公開 checksum ファイルがないため、
 公式 HTTPS 配布物から算出したハッシュを固定している。署名による発行者検証とは区別する。
 プラグイン更新は `plugins.toml` の rev を更新し、検証後に commit する。
+補完の権限監査で拒否されたエントリは原因コードを記録して除外する。監査自体は省略しない。
 `apply` のたびに latest を解決する構成にはしない。
 
 `.chezmoiscripts/run_onchange_after_20-initialize-shell.sh.tmpl` は、ツール一覧・プラグイン宣言・

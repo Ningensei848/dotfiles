@@ -59,9 +59,23 @@ with tempfile.TemporaryDirectory(prefix='dotfiles-integration-') as temp:
 print -P -- "$PROMPT" >/dev/null
 print -r -- 'shell startup passed'
 '''])
-    assert startup.stderr == '', startup.stderr
+    # Hosted runners may provide writable system completion directories.
+    # The audit must reject them explicitly while keeping safe completions usable.
+    for line in startup.stderr.splitlines():
+        assert 'code=COMPLETION_AUDIT_REJECTED component=zsh' in line, startup.stderr
     events = (home / '.local/state/dotfiles/events.log').read_text()
     assert 'FAILED' not in events and 'MISSING' not in events, events
+    insecure = Path(temp) / 'insecure-completions'
+    insecure.mkdir(mode=0o777)
+    insecure.chmod(0o777)
+    (insecure / '_dotfiles_unsafe').write_text('#compdef dotfiles-unsafe\n')
+    env['FPATH'] = str(insecure) + ':' + ':'.join(healthy_paths)
+    rejected_completion = run(['/usr/bin/zsh', '-ic', '''
+[[ ${+_comps[git]} == 1 ]] || exit 20
+[[ ${+_comps[dotfiles-unsafe]} == 0 ]] || exit 21
+'''])
+    assert 'COMPLETION_AUDIT_REJECTED' in rejected_completion.stderr
+    assert 'COMPLETION_AUDIT_REJECTED' in (home / '.local/state/dotfiles/events.log').read_text()
     bad_source = Path(temp) / 'bad-source'
     shutil.copytree(ROOT, bad_source, ignore=shutil.ignore_patterns('.git', '__pycache__'))
     manifest = bad_source / '.chezmoidata/tools.toml'

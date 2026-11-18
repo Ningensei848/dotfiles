@@ -24,6 +24,10 @@
   run_onchange の非再実行は補完の時刻と内容で別に確認するよう修正。
 - INTEGRITY_ERROR_WORDING：改変配布物の拒否試験で、CLI のエラーに checksum という語を期待して失敗。
   実際は SHA256 mismatch と報告され、適切に拒否されていた。検証する診断名を修正して再確認。
+- CI_COMPINIT_ABORT：[初回 CI](https://github.com/Ningensei848/dotfiles/actions/runs/44312368652) の実バイナリ起動試験が非TTYでの compinit 中断により失敗。
+  初回ログから拒否対象のパスまでは特定できていない。明示的な compaudit の結果を安全な原因コードで記録し、
+  拒否されたエントリを compinit -i で除外するよう修正。監査を省略する -C/-u は使わない。
+  検証では権限の緩い補完ディレクトリを注入し、除外と正常な補完の継続を確認する。
 - ENV_DANGLING_COMPLETION：検証ホストの /usr/share/zsh/vendor-completions/_docker が
   /mnt/wsl/docker-desktop 内の見えないファイルを指し、compinit がファイル不在の警告を出した。
   リンク切れは確認済み。Docker Desktop 側でファイルが見えない根本原因は未確認。
@@ -32,5 +36,6 @@
   元のシステム FPATH を含む起動では警告が残りうる。
 
 実施していないこと：Windows/macOS の対応、arm64 実行、ログインシェル変更、
-ユーザー環境への適用、GitHub Actions の実行、起動速度の比較測定。
+ユーザー環境への適用、起動速度の比較測定。
+GitHub Actions の結果は PR #5 の Checks を参照する。
 失敗処理が正常でも高速化の効果や全端末での動作を保証するものではない。

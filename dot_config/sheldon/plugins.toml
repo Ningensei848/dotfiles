@@ -14,10 +14,24 @@ apply = ["completions"]
 
 [plugins.compinit]
 inline = """
-autoload -Uz compinit
-if compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"; then :; else
+autoload -Uz compinit compaudit
+typeset _dotfiles_insecure _dotfiles_audit_rc
+typeset -a _dotfiles_compinit_flags
+_dotfiles_compinit_flags=()
+if _dotfiles_insecure=$(compaudit 2>/dev/null); then :; else
+  _dotfiles_audit_rc=$?
+  if [[ -n "$_dotfiles_insecure" ]]; then
+    dotfiles_event COMPLETION_AUDIT_REJECTED zsh "$_dotfiles_audit_rc" excluded
+    # -i audits and excludes insecure entries; it does not bypass the audit.
+    _dotfiles_compinit_flags=(-i)
+  else
+    dotfiles_event COMPLETION_AUDIT_FAILED zsh "$_dotfiles_audit_rc" unavailable
+  fi
+fi
+if compinit "${_dotfiles_compinit_flags[@]}" -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"; then :; else
   dotfiles_event COMPLETION_INIT_FAILED zsh "$?" unavailable
 fi
+unset _dotfiles_insecure _dotfiles_audit_rc _dotfiles_compinit_flags
 """
 
 [plugins.zsh-history-substring-search]

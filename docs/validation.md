@@ -1,6 +1,8 @@
 # 検証記録（2026-11-18）
 
-対象は WSL/Linux。元の main は 3a2af0c0f347d4770dc54be9588a0415960ec3b0。
+主な利用環境は WSL 2 上の Ubuntu 26.04。CI 対象は Ubuntu 24.04 / 26.04。
+CI は GitHub ホストの Ubuntu で実行し、WSL 2 自体の統合動作確認とは区別する。
+元の main は 3a2af0c0f347d4770dc54be9588a0415960ec3b0。
 変更と検証は /tmp の checkout と一時 HOME で実施し、実ユーザーの HOME に apply していない。
 
 | 検査 | 結果・範囲 |
@@ -41,5 +43,5 @@
 
 実施していないこと：Windows/macOS の対応、arm64 実行、ログインシェル変更、
 ユーザー環境への適用、起動速度の比較測定。
-GitHub Actions の結果は PR #5 の Checks を参照する。
+GitHub Actions の最新の結果は、各変更を含む PR の Checks を参照する。
 失敗処理が正常でも高速化の効果や全端末での動作を保証するものではない。

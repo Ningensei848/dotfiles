@@ -28,6 +28,10 @@
   初回ログから拒否対象のパスまでは特定できていない。明示的な compaudit の結果を安全な原因コードで記録し、
   拒否されたエントリを compinit -i で除外するよう修正。監査を省略する -C/-u は使わない。
   検証では権限の緩い補完ディレクトリを注入し、除外と正常な補完の継続を確認する。
+- CI_GLOBAL_COMPINIT：[2回目の CI](https://github.com/Ningensei848/dotfiles/actions/runs/44312825456) で
+  管理側の補完初期化は復旧したが、それ以前の compinit 警告が残って失敗。
+  Ubuntu の /etc/zsh/zshrc がユーザーの .zshrc より先に compinit を呼ぶ実装を確認。
+  同ファイルが案内する skip_global_compinit=1 を小さな .zshenv に設定し、管理側へ初期化を集約。
 - ENV_DANGLING_COMPLETION：検証ホストの /usr/share/zsh/vendor-completions/_docker が
   /mnt/wsl/docker-desktop 内の見えないファイルを指し、compinit がファイル不在の警告を出した。
   リンク切れは確認済み。Docker Desktop 側でファイルが見えない根本原因は未確認。

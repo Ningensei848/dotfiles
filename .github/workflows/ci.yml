@@ -26,6 +26,7 @@ jobs:
           echo "$RUNNER_TEMP/dotfiles-tools" >> "$GITHUB_PATH"
       - name: Syntax and failure behavior
         run: |
+          zsh -n dot_zshenv
           zsh -n dot_zshrc
           zsh -n dot_config/zsh/config.zsh
           bash -n dot_local/bin/executable_dotfiles-completions

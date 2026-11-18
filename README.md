@@ -40,6 +40,7 @@ Rust / CMake によるソースビルド、sudo、OS 全体の upgrade、ログ�
 
 | 管理対象 | 配置 |
 | --- | --- |
+| Ubuntu の補完二重初期化を防ぐ設定 | `~/.zshenv` |
 | 起動用の小さなファイル | `~/.zshrc` |
 | Zsh 設定 | `~/.config/zsh/config.zsh` |
 | Sheldon 宣言 | `~/.config/sheldon/plugins.toml` |
@@ -97,7 +98,7 @@ exec zsh
 
 ## 旧構成からの移行
 
-最初の `chezmoi diff` で `~/.zshrc` と `~/.local/bin` の変更を確認する。
+最初の `chezmoi diff` で `~/.zshenv`・`~/.zshrc` と `~/.local/bin` の変更を確認する。
 独自の追記がある場合は適用前に保存・移植する。
 旧 `~/.zsh` 内の設定と Starship 初期化キャッシュは新構成では読まない。
 旧ファイルや `~/.scripts/nf_downloader.sh` をユーザーの HOME から自動削除しない。

@@ -1,0 +1,3 @@
+# Ubuntu otherwise runs compinit in /etc/zsh/zshrc before ~/.zshrc.
+# Let the managed Sheldon configuration register fpath and audit it once.
+skip_global_compinit=1

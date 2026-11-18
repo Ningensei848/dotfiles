@@ -92,6 +92,7 @@ class ShellFailures(Fixture):
         config.mkdir(parents=True)
         shutil.copy(ROOT / 'dot_config/zsh/config.zsh', config)
         shutil.copy(ROOT / 'dot_zshrc', self.home / '.zshrc')
+        shutil.copy(ROOT / 'dot_zshenv', self.home / '.zshenv')
         self.stub('sheldon', 'exit 44\n')
         self.stub('starship', 'exit 45\n')
         source_file = self.home / 'args.zsh'

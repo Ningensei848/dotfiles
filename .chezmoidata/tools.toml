@@ -1,0 +1,19 @@
+# Reviewed 2026-11-18. These hashes describe the upstream release archives.
+# Starship hashes were checked against upstream .sha256 files.
+# Sheldon publishes no checksum file: hashes were computed from HTTPS downloads.
+[tools.sheldon]
+version = "0.8.5"
+[tools.sheldon.archives.amd64]
+url = "https://github.com/rossmacarthur/sheldon/releases/download/0.8.5/sheldon-0.8.5-x86_64-unknown-linux-musl.tar.gz"
+sha256 = "80aa0be617072c278d67fd6c5fbce4903d3801d78b6abf8f058f0648d2242c78"
+[tools.sheldon.archives.arm64]
+url = "https://github.com/rossmacarthur/sheldon/releases/download/0.8.5/sheldon-0.8.5-aarch64-unknown-linux-musl.tar.gz"
+sha256 = "1f6b792e49e259f7c313e9921c8d4ad638d827abc2c023efe0588a55678f9a3e"
+[tools.starship]
+version = "1.27.0"
+[tools.starship.archives.amd64]
+url = "https://github.com/starship/starship/releases/download/v1.27.0/starship-x86_64-unknown-linux-musl.tar.gz"
+sha256 = "10c8eb4cb3b761d9bf59ea828444c2dab36c900b7d69a69e08814b286969df89"
+[tools.starship.archives.arm64]
+url = "https://github.com/starship/starship/releases/download/v1.27.0/starship-aarch64-unknown-linux-musl.tar.gz"
+sha256 = "341f5cbf24699fa0b27ec88965ad25f862ea09e15d35a543fd6ffdff1d2aa00d"

@@ -1,97 +1,129 @@
-# らくしたっていいじゃない、にんげんだもの
+# dotfiles — WSL / Linux
 
-![`.dotfiles` をﾘﾎﾟｼﾞﾄﾘとして `chezmoi` で管理する](https://custom-og-image-generator.vercel.app/api/%60.dotfiles%60%20%E3%82%92%EF%BE%98%EF%BE%8E%EF%BE%9F%EF%BD%BC%EF%BE%9E%EF%BE%84%EF%BE%98%E3%81%A8%E3%81%97%E3%81%A6%20%60chezmoi%60%20%E3%81%A7%E7%AE%A1%E7%90%86%E3%81%99%E3%82%8B.png?theme=dark&copyright=Kiai+de+Nantoka&logo=https%3A%2F%2Fwww.chezmoi.io%2Flogo.svg&avater=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F20794309&author=Kiai&aka=%40Ningensei848&site=%E6%B0%97%E5%90%88%E3%81%A7%E3%81%AA%E3%82%93%E3%81%A8%E3%81%8B&tags=dev&tags=dotfiles&tags=chezmoi)
+chezmoi で設定とユーザー用 CLI を管理する。対応は Linux amd64 / arm64（WSL を含む）。
+Zsh、Sheldon、Starship を継続し、シェル起動時のネットワーク取得や独自の生成コード管理を減らす。
 
-## 使い方:how to use
+## 導入
 
-[`chezmoi`](https://www.chezmoi.io/) を入手して、`dotfiles` リポジトリから必要なものを展開する
+先にディストリビューションのパッケージ管理で Git・Zsh・Bash を用意する。
+Ubuntu / Debian の例：
 
-```shell
-export GITHUB_USERNAME="Ningensei848" && \
-export ZSH_CUSTOM="${HOME}/.zsh" && \
-export PATH="${HOME}/bin:${PATH}" && \
-sh -c "$(wget -qO- get.chezmoi.io)" -- -b $HOME/bin && \
-echo '# chezmoi\npath+=("$HOME/bin")\n' >> ~/.zshrc && \
-source ~/.zshrc && which chezmoi && chezmoi --version && \
-echo $ZSH_CUSTOM && mkdir -p $ZSH_CUSTOM/plugins/chezmoi && \
-chezmoi completion zsh --output=$ZSH_CUSTOM/plugins/chezmoi/_chezmoi && \
-chezmoi init --apply $GITHUB_USERNAME
+```sh
+sudo apt-get update
+sudo apt-get install --no-install-recommends git zsh bash
 ```
 
-## zsh
+chezmoi は **2.74.1 以上**を使う。
+[公式インストール手順](https://www.chezmoi.io/install/)で導入し、`chezmoi --version` を確認する。
+既存版がある場合は `chezmoi upgrade` を使える。
 
-Ubuntu の場合：
-
-```shell
-sudo apt-get -y update && \
-sudo apt-get -y upgrade && \
-sudo apt-get -y install zsh && \
-zsh --version && chsh -s $(which zsh) && \
-echo $SHELL && $SHELL --version
+```sh
+chezmoi init Ningensei848
+chezmoi diff
+chezmoi apply
+exec zsh
 ```
 
-## 管理したい
+作業中のローカル checkout を使う場合：
 
-- rustup (rust+cargo)
-
-### rustup
-
-How to install:
-
-```shell
-curl https://sh.rustup.rs -sSf | sh
+```sh
+chezmoi --source "$PWD" diff
+chezmoi --source "$PWD" apply
 ```
 
-### zsh
+apply は `.local/bin/sheldon` と `.local/bin/starship` を取得する。
+版と SHA256 は `.chezmoidata/tools.toml` に固定し、chezmoi の externals 機能が検証・配置する。
+Rust / CMake によるソースビルド、sudo、OS 全体の upgrade、ログインシェル変更は apply に含めない。
+初回は Sheldon のプラグイン取得も行うため GitHub への接続が必要。
 
-`$HOME/.zshrc` は別の場所に動かせないから、設定ファイルを纏めるための `.zsh/` を別途つくることにする
-（`.zshrc` 等の動かせない基本ファイルからは `.zsh/` の設定ファイルを読みに行かせる）
+## 配置と責務
 
-#### sheldon
+| 管理対象 | 配置 |
+| --- | --- |
+| 起動用の小さなファイル | `~/.zshrc` |
+| Zsh 設定 | `~/.config/zsh/config.zsh` |
+| Sheldon 宣言 | `~/.config/sheldon/plugins.toml` |
+| Starship の表示設定 | `~/.config/starship.toml` |
+| ユーザー用 CLI | `~/.local/bin` |
+| 補完生成コマンド | `~/.local/bin/dotfiles-completions` |
+| プラグイン実体・端末固有のロック | `$XDG_DATA_HOME/sheldon` |
+| 生成した補完 | `$XDG_DATA_HOME/zsh/completions` |
+| 補完初期化のキャッシュ | `$XDG_CACHE_HOME/zsh` |
+| 安全な実行記録 | `$XDG_STATE_HOME/dotfiles/events.log` |
 
-pre-requisitory: `cargo`
+DATA / CACHE / STATE は未指定なら XDG の既定値を使う。
+管理する設定・CLI・共有ヘルパーのパスは上表のホーム相対位置に固定。
+`XDG_CONFIG_HOME` を変えても管理ファイルの配置先は変わらない。
+履歴は移行時に失わないよう既存の `~/.zsh_history` を使う。
+生成物は Git に含めず、プラグイン参照は TOML の commit SHA で固定する。
 
-```shell
-# install GCC
-sudo apt update && \
-sudo apt install pkg-config libssl-dev build-essential && \
-cargo install sheldon
+Rust の rustup/Cargo、proto、uv は既存の導入を利用する。
+言語環境やプロジェクト依存の導入・更新はこの shell 設定に含めない。
+`~/.local/bin` を優先するため、Cargo 等に同名 CLI があってもここで固定した版を使う。
+
+## 更新と復旧
+
+```sh
+chezmoi cd
+git pull --ff-only
+chezmoi diff
+chezmoi apply
 ```
 
-#### Starship
+版を上げるときは `.chezmoidata/tools.toml` の version・URL・SHA256 をまとめて更新する。
+Starship は公開 `.sha256` と照合する。Sheldon 0.8.5 は公開 checksum ファイルがないため、
+公式 HTTPS 配布物から算出したハッシュを固定している。署名による発行者検証とは区別する。
+プラグイン更新は `plugins.toml` の rev を更新し、検証後に commit する。
+`apply` のたびに latest を解決する構成にはしない。
 
-```shell
-cargo install starship --locked
+`.chezmoiscripts/run_onchange_after_20-initialize-shell.sh.tmpl` は、ツール一覧・プラグイン宣言・
+生成コマンド・記録ヘルパーの内容が変わったときにロック確認と補完生成を行う。
+変更がない再適用では補完を書き直さない。前提条件の確認スクリプトは毎回実行するので、
+`chezmoi status` にそのスクリプトの `R` が表示されるのは正常。
+
+後から任意の CLI を入れたとき、または生成物を手動で消したとき：
+
+```sh
+dotfiles-completions
+exec zsh
 ```
 
-Cmake がない！と怒られたら：
+補完生成に失敗すると非0で終了し、そのツールの直前の正常な補完を保持する。
+失敗・復旧後の成功を、安全な原因コード、対象、終了コード、時刻、PID とともに追記する。
+自動再試行は行わず、各実行の attempt は1。後の成功でも以前の失敗を消さない。
+生のツール出力や環境変数の値は記録しない。
+シェル初期化の失敗時は診断を出して基本シェルを利用可能にする。
 
-```shell
-sudo apt -y update && \
-sudo apt -y install build-essential && \
-echo "cmake には curl, zlib が必要" && \
-sudo apt -y install zlib1g-dev libcurl4-gnutls-dev && \
-cd /tmp && \
-git clone https://github.com/Kitware/CMake.git && \
-cd CMake && \
-./configure --system-curl --system-zlib && \
-make && \
-sudo make install
+## 旧構成からの移行
+
+最初の `chezmoi diff` で `~/.zshrc` と `~/.local/bin` の変更を確認する。
+独自の追記がある場合は適用前に保存・移植する。
+旧 `~/.zsh` 内の設定と Starship 初期化キャッシュは新構成では読まない。
+旧ファイルや `~/.scripts/nf_downloader.sh` をユーザーの HOME から自動削除しない。
+`~/.scripts/get_completion.sh` は新しい生成コマンドへの互換入口を維持する。
+
+フォントは端末を描画する側に Nerd Font を設定する。
+WSL + Windows Terminal なら Windows 側に設定し、WSL のフォント導入だけで済ませない。
+[公式のフォント導入経路](https://www.nerdfonts.com/font-downloads)を使う。
+Windows PowerShell の旧ファイルは参考用に残すが Linux の HOME へは配布しない。
+
+## 検証
+
+Python 3、Zsh、Git と、PATH 上の chezmoi 2.74.1 以上を使用する。
+
+```sh
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+python3 tests/integration.py
 ```
 
-cf. https://www.kkaneko.jp/tools/ubuntu/cmake_buildout.html
+隔離した HOME で失敗・空出力・不正構文・秘密本文を記録しないことを確認する。
+統合検証は実バイナリとプラグインを取得して初回適用・再適用・シェル起動を行う。
+arm64 は配布物のハッシュを確認したが、この変更時の実行検証は amd64 のみ。
+[検証時の失敗と制約](docs/validation.md)も参照。
 
-## Author
+[chezmoi externals](https://www.chezmoi.io/reference/special-files/chezmoiexternal-format/) /
+[スクリプトの作法](https://www.chezmoi.io/user-guide/use-scripts-to-perform-actions/) /
+[Sheldon の設定](https://sheldon.cli.rs/Configuration.html) /
+[Starship の初期化](https://starship.rs/)
 
-[![Twitter is what's happening in the world and what people are talking about right now.](https://img.shields.io/badge/@Ningensei848-%231DA1F2.svg?&style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/Ningensei848)
-
-[![](https://img.shields.io/badge/k.kubokawa@klis.tsukuba.ac.jp-%23757575.svg?&style=for-the-badge&logo=gmail&logoColor=EA4335)](mailto:k.kubokawa@klis.tsukuba.ac.jp)
-
-## License
-
-_This software is released under the [MIT License](LICENSE)._
-
-## TODO:
-
-- [ ] CI/CD の導入
-  - [ ] 異なる OS 間での導入スクリプトの作成
+MIT License — see LICENSE.

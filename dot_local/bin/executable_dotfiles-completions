@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# Regenerate installed tools' completions without replacing good files on failure.
+set -u
+# shellcheck source=dot_local/share/dotfiles/events.sh
+source "$HOME/.local/share/dotfiles/events.sh"
+completion_dir="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/completions"
+if ! mkdir -p "$completion_dir"; then
+    dotfiles_event DIRECTORY_CREATE_FAILED completions 1 unavailable
+    exit 1
+fi
+failure=0
+pending_file=''
+cleanup() {
+    if [[ -n "$pending_file" ]]; then
+        rm -f -- "$pending_file" || dotfiles_event TEMP_CLEANUP_FAILED completions "$?" unavailable
+    fi
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+generate() {
+    case "$1" in
+        chezmoi) chezmoi completion zsh ;;
+        sheldon) sheldon completions --shell zsh ;;
+        rustup) rustup completions zsh ;;
+        cargo) rustup completions zsh cargo ;;
+        uv) uv generate-shell-completion zsh ;;
+        proto) proto completions --shell zsh ;;
+        docker) docker completion zsh ;;
+    esac
+}
+for tool in chezmoi sheldon rustup cargo uv proto docker; do
+    executable="$tool"
+    [[ "$tool" != cargo ]] || executable=rustup
+    if ! command -v "$executable" >/dev/null 2>&1; then
+        # Optional tools are not installed as a side effect of shell setup.
+        if [[ "$tool" == chezmoi || "$tool" == sheldon ]]; then
+            dotfiles_event COMMAND_MISSING "$tool" 127 unavailable
+            failure=1
+        fi
+        continue
+    fi
+    target="$completion_dir/_$tool"
+    recovery=unavailable
+    [[ ! -f "$target" ]] || recovery=retained
+    if pending_file=$(mktemp "$completion_dir/.$tool.XXXXXXXX"); then :; else
+        rc=$?
+        dotfiles_event TEMP_CREATE_FAILED "$tool" "$rc" "$recovery"
+        failure=1
+        continue
+    fi
+    if generate "$tool" > "$pending_file"; then
+        if [[ ! -s "$pending_file" ]]; then
+            dotfiles_event COMPLETION_EMPTY "$tool" 1 "$recovery"
+            failure=1
+        elif zsh -n "$pending_file"; then
+            if mv -f -- "$pending_file" "$target"; then
+                pending_file=''
+                if ! dotfiles_event COMPLETION_GENERATION_SUCCEEDED "$tool" 0 replaced; then
+                    failure=1
+                fi
+                continue
+            else
+                rc=$?
+                dotfiles_event COMPLETION_REPLACE_FAILED "$tool" "$rc" "$recovery"
+                failure=1
+            fi
+        else
+            rc=$?
+            dotfiles_event COMPLETION_SYNTAX_FAILED "$tool" "$rc" "$recovery"
+            failure=1
+        fi
+    else
+        rc=$?
+        dotfiles_event COMPLETION_GENERATION_FAILED "$tool" "$rc" "$recovery"
+        failure=1
+    fi
+    cleanup
+    pending_file=''
+done
+exit "$failure"

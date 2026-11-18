@@ -1,0 +1,10 @@
+#!/bin/sh
+# Keep distro package management outside apply; validate before changing files.
+missing=0
+for tool in git zsh bash; do
+    if ! command -v "$tool" >/dev/null 2>&1; then
+        printf 'dotfiles code=PREREQUISITE_MISSING component=%s exit=127 attempt=1 recovery=unavailable\n' "$tool" >&2
+        missing=1
+    fi
+done
+exit "$missing"

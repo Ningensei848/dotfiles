@@ -1,0 +1,54 @@
+shell = "zsh"
+
+[templates]
+# Preserve failures even if a later plugin loads successfully.
+source = """{% for file in files %}if source "{{ file }}"; then :; else dotfiles_event PLUGIN_SOURCE_FAILED {{ name }} "$?" unavailable; fi
+{% endfor %}{{ hooks?.post | nl }}"""
+completions = 'fpath=("{{ dir }}/src" $fpath)'
+
+# Register every completion directory BEFORE initializing the completion system.
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+rev = "989b23277ab33e8d5e82df6aed936e846db9d8b8"
+apply = ["completions"]
+
+[plugins.compinit]
+inline = """
+autoload -Uz compinit compaudit
+typeset _dotfiles_insecure _dotfiles_audit_rc
+typeset -a _dotfiles_compinit_flags
+_dotfiles_compinit_flags=()
+if _dotfiles_insecure=$(compaudit 2>/dev/null); then :; else
+  _dotfiles_audit_rc=$?
+  if [[ -n "$_dotfiles_insecure" ]]; then
+    dotfiles_event COMPLETION_AUDIT_REJECTED zsh "$_dotfiles_audit_rc" excluded
+    # -i audits and excludes insecure entries; it does not bypass the audit.
+    _dotfiles_compinit_flags=(-i)
+  else
+    dotfiles_event COMPLETION_AUDIT_FAILED zsh "$_dotfiles_audit_rc" unavailable
+  fi
+fi
+if compinit "${_dotfiles_compinit_flags[@]}" -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"; then :; else
+  dotfiles_event COMPLETION_INIT_FAILED zsh "$?" unavailable
+fi
+unset _dotfiles_insecure _dotfiles_audit_rc _dotfiles_compinit_flags
+"""
+
+[plugins.zsh-history-substring-search]
+github = "zsh-users/zsh-history-substring-search"
+rev = "a0bdb0d47dbaba31dba2db7af8c48a5d9c74049a"
+hooks.post = """
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+"""
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+rev = "85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5"
+
+# ZLE highlighting must follow the other widgets.
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
+rev = "e6683f20e5c38d3e5447f45845d04ddda75d0f23"

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# tools: {{ include ".chezmoidata/tools.toml" | sha256sum }}
+# plugins: {{ include "dot_config/sheldon/plugins.toml" | sha256sum }}
+# generator: {{ include "dot_local/bin/executable_dotfiles-completions" | sha256sum }}
+# diagnostics: {{ include "dot_local/share/dotfiles/events.sh" | sha256sum }}
+set -u
+# shellcheck source=dot_local/share/dotfiles/events.sh
+source "$HOME/.local/share/dotfiles/events.sh"
+export PATH="$HOME/.local/bin:$PATH"
+export SHELDON_CONFIG_DIR="$HOME/.config/sheldon"
+export SHELDON_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/sheldon"
+if sheldon lock; then :; else
+    rc=$?
+    dotfiles_event PLUGIN_LOCK_FAILED sheldon "$rc" unavailable
+    exit "$rc"
+fi
+"$HOME/.local/bin/dotfiles-completions"

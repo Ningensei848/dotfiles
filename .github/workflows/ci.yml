@@ -1,13 +1,36 @@
-# cf. [既存の dotfiles を chezmoi で管理する](https://zenn.dev/johnmanjiro13/articles/d14825f4ef3184)
-name: Chezmoi Install Check
-on:
-  - push
+name: Linux dotfiles
+on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
-  test:
-    name: test
-    runs-on: macos-latest
-    timeout-minutes: 5
+  verify:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
-      - name: Install dotfiles
-        run: sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply -S .
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install test prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y zsh shellcheck
+      - name: Install verified chezmoi 2.74.1 for tests
+        run: |
+          mkdir -p "$RUNNER_TEMP/dotfiles-tools"
+          curl -fsSL https://github.com/twpayne/chezmoi/releases/download/v2.74.1/chezmoi_2.74.1_linux_amd64.tar.gz -o "$RUNNER_TEMP/chezmoi.tar.gz"
+          echo "ae01c66b1a6dbf563667c63fbbd9986b3cfa3c98dd266ddee732f63e8af2e9d1  $RUNNER_TEMP/chezmoi.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/chezmoi.tar.gz" -C "$RUNNER_TEMP/dotfiles-tools" chezmoi
+          echo "$RUNNER_TEMP/dotfiles-tools" >> "$GITHUB_PATH"
+      - name: Syntax and failure behavior
+        run: |
+          zsh -n dot_zshenv
+          zsh -n dot_zshrc
+          zsh -n dot_config/zsh/config.zsh
+          bash -n dot_local/bin/executable_dotfiles-completions
+          shellcheck --external-sources dot_local/bin/executable_dotfiles-completions dot_scripts/get_completion.sh
+          python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Clean apply, reapply, and real shell startup
+        run: python3 tests/integration.py

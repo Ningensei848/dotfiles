@@ -1,0 +1,15 @@
+{{- if ne .chezmoi.os "linux" }}
+{{- fail "This source state supports WSL/Linux only." }}
+{{- end }}
+{{- range $name, $tool := .tools }}
+{{- $archive := index $tool.archives $.chezmoi.arch }}
+{{- if not $archive }}
+{{- fail "Supported Linux architectures: amd64, arm64." }}
+{{- end }}
+[".local/bin/{{ $name }}"]
+type = "archive-file"
+url = {{ $archive.url | quote }}
+path = {{ $name | quote }}
+executable = true
+checksum.sha256 = {{ $archive.sha256 | quote }}
+{{ end }}

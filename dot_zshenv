@@ -1,3 +1,9 @@
+# Preserve Rust setup for non-interactive Zsh as well.
+if [[ -r "$HOME/.cargo/env" ]]; then
+  if source "$HOME/.cargo/env"; then :; else
+    print -u2 -- "dotfiles code=ENV_SOURCE_FAILED component=rustup exit=$? attempt=1 recovery=unavailable"
+  fi
+fi
 # Ubuntu otherwise runs compinit in /etc/zsh/zshrc before ~/.zshrc.
 # Let the managed Sheldon configuration register fpath and audit it once.
 skip_global_compinit=1

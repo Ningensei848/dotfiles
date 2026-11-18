@@ -13,6 +13,12 @@ if not chezmoi:
 with tempfile.TemporaryDirectory(prefix='dotfiles-integration-') as temp:
     home = Path(temp) / 'home'
     home.mkdir()
+    # Reproduce an existing private configuration directory and machine policy.
+    config = home / '.config'
+    config.mkdir(mode=0o750)
+    chezmoi_config = config / 'chezmoi'
+    chezmoi_config.mkdir(mode=0o750)
+    (chezmoi_config / 'chezmoi.toml').write_text('umask = 0o027\n')
     env = {'HOME': str(home), 'PATH': f'{Path(chezmoi).parent}:/usr/bin:/bin',
            'TERM': 'xterm-256color', 'LANG': 'C.UTF-8'}
     command = [chezmoi, '--source', str(ROOT), '--destination', str(home)]
@@ -24,6 +30,7 @@ with tempfile.TemporaryDirectory(prefix='dotfiles-integration-') as temp:
         return result
 
     run(command + ['apply', '--force'])
+    assert config.stat().st_mode & 0o777 == 0o750, 'existing config permissions widened'
     assert (home / '.local/bin/sheldon').is_file()
     assert (home / '.local/bin/starship').is_file()
     assert not (home / 'tests').exists()

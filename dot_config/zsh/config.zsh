@@ -3,9 +3,6 @@ source "$HOME/.local/share/dotfiles/events.sh"
 
 # Prefer the versions managed by chezmoi; keep existing language managers usable.
 typeset -U path fpath
-if [[ -r "$HOME/.cargo/env" ]]; then
-  source "$HOME/.cargo/env" || dotfiles_event ENV_SOURCE_FAILED rustup "$?" unavailable
-fi
 export PROTO_HOME="${PROTO_HOME:-$HOME/.proto}"
 path=("$HOME/.local/bin" "$HOME/bin" "$PROTO_HOME/shims" "$PROTO_HOME/bin" "$HOME/.cargo/bin" $path)
 export PATH
